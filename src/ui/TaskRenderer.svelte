@@ -1,13 +1,11 @@
 <script lang="ts">
-  import { App, MarkdownRenderer } from "obsidian";
-  import { getContext, onMount } from "svelte";
+  import { MarkdownRenderer } from "obsidian";
+  import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import type { ITodoistMetadata, TodoistApi } from "../api/api";
   import type { Task } from "../api/models";
   import { UnknownProject, UnknownSection } from "../api/raw_models";
-  import { showTaskContext } from "../contextMenu";
   import type { ISettings } from "../settings";
-  import { APP_CONTEXT_KEY } from "../utils";
   import TaskList from "./TaskList.svelte";
 
   export let metadata: ITodoistMetadata;
@@ -18,8 +16,6 @@
   export let onClickTask: (task: Task) => Promise<void>;
 
   export let todo: Task;
-
-  const app = getContext<App>(APP_CONTEXT_KEY);
 
   $: isCompletable = !todo.content.startsWith("*");
 
@@ -65,29 +61,9 @@
         return "todoist-p1";
     }
   }
-
-  function onClickTaskContainer(evt: MouseEvent) {
-    if (evt.button == 2) {
-      evt.stopPropagation();
-      evt.preventDefault();
-
-      showTaskContext(
-        app,
-        {
-          task: todo,
-          onClickTask: onClickTask,
-        },
-        {
-          x: evt.pageX,
-          y: evt.pageY,
-        }
-      );
-    }
-  }
 </script>
 
 <li
-  on:mouseup={onClickTaskContainer}
   transition:fade={{ duration: settings.fadeToggle ? 400 : 0 }}
   class="task-list-item {todo.isOverdue() ? 'task-overdue' : ''}
           {todo.hasTime ? 'has-time' : 'has-no-time'}">

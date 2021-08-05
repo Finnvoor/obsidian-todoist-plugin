@@ -1,7 +1,4 @@
-import type { App } from "obsidian";
-import { writable } from "svelte/store";
-
-const proc = require("process");
+import { App, Platform } from "obsidian";
 
 export function isPositiveInteger(str: string): boolean {
   const num = toInt(str);
@@ -52,7 +49,7 @@ export function notification(contents: string, timeoutMs: number) {
 export function getTokenPath(): string {
   let pathSep = "/";
 
-  if (proc.platform == "win32") {
+  if (!Platform.isMacOS) {
     pathSep = "\\";
   }
 
